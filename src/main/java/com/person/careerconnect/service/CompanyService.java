@@ -2,7 +2,12 @@ package com.person.careerconnect.service;
 
 import com.person.careerconnect.domain.Company;
 import com.person.careerconnect.domain.dto.CompanyDTO;
+import com.person.careerconnect.domain.dto.Meta;
+import com.person.careerconnect.domain.dto.ResultPaginationDTO;
 import com.person.careerconnect.repository.CompanyRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,8 +26,21 @@ public class CompanyService {
         return this.companyRepository.save(company);
     }
 
-    public List<Company> handleGetCompany() {
-        return this.companyRepository.findAll();
+    public ResultPaginationDTO handleGetCompany(Specification<Company> spec, Pageable pageable) {
+        Page<Company> pageCompany = this.companyRepository.findAll(spec, pageable);
+
+        ResultPaginationDTO rs = new ResultPaginationDTO();
+        Meta mt = new Meta();
+
+        mt.setPage(pageCompany.getNumber() + 1);
+        mt.setPageSize(pageCompany.getSize());
+
+        mt.setPages(pageCompany.getTotalPages());
+        mt.setTotal(pageCompany.getTotalElements());
+
+        rs.setMeta(mt);
+        rs.setResult(pageCompany.getContent());
+        return rs;
     }
     public Company handleUpdateCompany(Company company) {
         Optional<Company> CompanyOptional = this.companyRepository.findById(company.getId());
