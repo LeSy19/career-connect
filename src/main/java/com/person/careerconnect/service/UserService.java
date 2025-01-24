@@ -1,7 +1,12 @@
 package com.person.careerconnect.service;
 
 import com.person.careerconnect.domain.User;
+import com.person.careerconnect.domain.dto.Meta;
+import com.person.careerconnect.domain.dto.ResultPaginationDTO;
 import com.person.careerconnect.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,8 +39,21 @@ public class UserService {
         return null;
     }
 
-    public List<User> findAllUsers(){
-        return this.userRepository.findAll();
+    public ResultPaginationDTO findAllUsers(Specification<User> spec, Pageable pageable){
+        Page<User> pageUser = this.userRepository.findAll(spec, pageable);
+        ResultPaginationDTO rs = new ResultPaginationDTO();
+        Meta mt = new Meta();
+
+        mt.setPage(pageUser.getNumber() + 1);
+        mt.setPageSize(pageUser.getSize());
+
+        mt.setPages(pageUser.getTotalPages());
+        mt.setTotal(pageUser.getTotalElements());
+
+        rs.setMeta(mt);
+        rs.setResult(pageUser.getContent());
+
+        return rs;
     }
 
     public User updateUser(User user){
