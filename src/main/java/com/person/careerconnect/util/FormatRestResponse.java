@@ -1,6 +1,7 @@
 package com.person.careerconnect.util;
 
 import com.person.careerconnect.domain.RestResponse;
+import com.person.careerconnect.util.annotation.ApiMessage;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -41,9 +42,9 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object> {
             res.setMessage(body);
         }else{
             //success
-            res.setMessage("CALL API SUCCESS");
             res.setData(body);
-
+            ApiMessage message = returnType.getMethodAnnotation(ApiMessage.class);
+            res.setMessage(message != null ? message.value() : "CALL API SUCCESS");
         }
         return res;
     }
