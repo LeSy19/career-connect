@@ -82,30 +82,36 @@ public class AuthController {
 
     @GetMapping("/auth/account")
     @ApiMessage("Fetch Account")
-    public ResponseEntity<ResLoginDTO.UserLogin> getAccount(){
+    public ResponseEntity<ResLoginDTO.UserGetAccount> getAccount(){
         String email = SecurityUtil.getCurrentUserLogin().isPresent() ?
                 SecurityUtil.getCurrentUserLogin().get() : "";
 
         User currentUserDB = this.userService.handleGetUserByUsername(email);
         ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin();
+        ResLoginDTO.UserGetAccount userGetAccount = new ResLoginDTO.UserGetAccount();
+
         if(currentUserDB != null){
             userLogin.setId(currentUserDB.getId());
             userLogin.setName(currentUserDB.getName());
             userLogin.setEmail(currentUserDB.getEmail());
+            userGetAccount.setUser(userLogin);
         }
 
-        return ResponseEntity.ok().body(userLogin);
+        return ResponseEntity.ok().body(userGetAccount);
     }
 
 
     @GetMapping("/auth/refresh")
     @ApiMessage("Get User By Refresh Token")
     public ResponseEntity<ResLoginDTO> getRefreshToken(
-        @CookieValue(name = "refresh_token") String refresh_token) throws IdInvalidException{
+        @CookieValue(name = "refresh_token", defaultValue = "abc") String refresh_token) throws IdInvalidException{
         //check valid
         Jwt decodedToken = this.securityUtil.checkValidRefreshToken(refresh_token);
         String email = decodedToken.getSubject();
         
+        if(decodedToken.equals("abc")){
+            throw new IdInvalidException("Access token không có");
+        }
         //check user by token + email
         User currentUser = this.userService.getUserByRefreshTokenAndEmail(refresh_token, email);
         if(currentUser == null){
@@ -143,6 +149,33 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, resCookies.toString())
                 .body(res);
+    }
+
+    @PostMapping("/auth/logout")
+    @ApiMessage("User logout")
+    public ResponseEntity<Void> logout() throws IdInvalidException{
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
+
+        if(email.equals("")){
+            throw new IdInvalidException("Access Token không hợp lệ");
+        }
+        
+        //update refresh token == null
+        this.userService.updateUserToken(null, email);
+
+        //remove refresh token cookie
+        ResponseCookie deleteSpringCookie = ResponseCookie
+                .from("refresh_token", null)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(0)
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, deleteSpringCookie.toString())
+                .body(null);
+
     }
 
 }
