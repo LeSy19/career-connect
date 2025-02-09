@@ -1,7 +1,8 @@
 package com.person.careerconnect.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.person.careerconnect.domain.RestResponse;
+import com.person.careerconnect.domain.response.RestResponse;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

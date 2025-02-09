@@ -1,4 +1,4 @@
-package com.person.careerconnect.domain;
+package com.person.careerconnect.domain.response;
 
 import lombok.Getter;
 import lombok.Setter;

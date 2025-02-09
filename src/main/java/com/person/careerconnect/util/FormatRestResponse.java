@@ -1,6 +1,6 @@
 package com.person.careerconnect.util;
 
-import com.person.careerconnect.domain.RestResponse;
+import com.person.careerconnect.domain.response.RestResponse;
 import com.person.careerconnect.util.annotation.ApiMessage;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.MethodParameter;
