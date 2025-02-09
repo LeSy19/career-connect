@@ -1,6 +1,7 @@
-package com.person.careerconnect.service;
+package com.person.careerconnect.config;
 
-import com.person.careerconnect.domain.User;
+import com.person.careerconnect.service.UserService;
+
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
