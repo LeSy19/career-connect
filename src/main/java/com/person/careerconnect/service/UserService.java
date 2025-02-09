@@ -1,7 +1,10 @@
 package com.person.careerconnect.service;
 
 import com.person.careerconnect.domain.User;
-import com.person.careerconnect.domain.dto.*;
+import com.person.careerconnect.domain.response.ResCreateUserDTO;
+import com.person.careerconnect.domain.response.ResUpdateUserDTO;
+import com.person.careerconnect.domain.response.ResUserDTO;
+import com.person.careerconnect.domain.response.ResultPaginationDTO;
 import com.person.careerconnect.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

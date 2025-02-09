@@ -1,4 +1,4 @@
-package com.person.careerconnect.domain.dto;
+package com.person.careerconnect.domain.request;
 
 import lombok.Getter;
 import lombok.Setter;

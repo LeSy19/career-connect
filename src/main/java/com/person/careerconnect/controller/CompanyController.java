@@ -1,7 +1,7 @@
 package com.person.careerconnect.controller;
 
 import com.person.careerconnect.domain.Company;
-import com.person.careerconnect.domain.dto.ResultPaginationDTO;
+import com.person.careerconnect.domain.response.ResultPaginationDTO;
 import com.person.careerconnect.service.CompanyService;
 import com.person.careerconnect.service.error.IdInvalidException;
 import com.person.careerconnect.util.annotation.ApiMessage;

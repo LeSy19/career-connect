@@ -1,10 +1,10 @@
 package com.person.careerconnect.controller;
 
 import com.person.careerconnect.domain.User;
-import com.person.careerconnect.domain.dto.ResCreateUserDTO;
-import com.person.careerconnect.domain.dto.ResUpdateUserDTO;
-import com.person.careerconnect.domain.dto.ResUserDTO;
-import com.person.careerconnect.domain.dto.ResultPaginationDTO;
+import com.person.careerconnect.domain.response.ResCreateUserDTO;
+import com.person.careerconnect.domain.response.ResUpdateUserDTO;
+import com.person.careerconnect.domain.response.ResUserDTO;
+import com.person.careerconnect.domain.response.ResultPaginationDTO;
 import com.person.careerconnect.service.UserService;
 import com.person.careerconnect.service.error.IdInvalidException;
 import com.person.careerconnect.util.annotation.ApiMessage;

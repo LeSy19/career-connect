@@ -1,8 +1,8 @@
 package com.person.careerconnect.controller;
 
 import com.person.careerconnect.domain.User;
-import com.person.careerconnect.domain.dto.ReqLoginDTO;
-import com.person.careerconnect.domain.dto.ResLoginDTO;
+import com.person.careerconnect.domain.request.ReqLoginDTO;
+import com.person.careerconnect.domain.response.ResLoginDTO;
 import com.person.careerconnect.service.SecurityUtil;
 import com.person.careerconnect.service.UserService;
 import com.person.careerconnect.service.error.IdInvalidException;

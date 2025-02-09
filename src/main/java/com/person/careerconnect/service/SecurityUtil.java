@@ -1,7 +1,8 @@
 package com.person.careerconnect.service;
 
 import com.nimbusds.jose.util.Base64;
-import com.person.careerconnect.domain.dto.ResLoginDTO;
+import com.person.careerconnect.domain.response.ResLoginDTO;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
