@@ -1,7 +1,7 @@
 package com.person.careerconnect.controller;
 
 import com.person.careerconnect.domain.User;
-import com.person.careerconnect.domain.dto.LoginDTO;
+import com.person.careerconnect.domain.dto.ReqLoginDTO;
 import com.person.careerconnect.domain.dto.ResLoginDTO;
 import com.person.careerconnect.service.SecurityUtil;
 import com.person.careerconnect.service.UserService;
@@ -38,7 +38,7 @@ public class AuthController {
     }
 
     @PostMapping("/auth/login")
-    public ResponseEntity<ResLoginDTO> login(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<ResLoginDTO> login(@RequestBody ReqLoginDTO loginDTO) {
 
         UsernamePasswordAuthenticationToken authenticationToken
                 = new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword());
