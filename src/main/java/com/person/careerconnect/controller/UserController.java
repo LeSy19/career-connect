@@ -10,7 +10,6 @@ import com.person.careerconnect.service.error.IdInvalidException;
 import com.person.careerconnect.util.annotation.ApiMessage;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;

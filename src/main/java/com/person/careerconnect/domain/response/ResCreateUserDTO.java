@@ -1,8 +1,6 @@
 package com.person.careerconnect.domain.response;
 
 import com.person.careerconnect.util.constant.GenderEnum;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,10 +14,17 @@ public class ResCreateUserDTO {
     private String email;
     private int age;
     private GenderEnum gender;
+    private CompanyUser company;
 
     private String address;
 
     private Instant createdAt;
 
 
+    @Getter
+    @Setter
+    public static class CompanyUser{
+        private long id;
+        private String name;
+    }
 }

@@ -1,6 +1,7 @@
 package com.person.careerconnect.domain.response;
 
 import com.person.careerconnect.util.constant.GenderEnum;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,4 +16,13 @@ public class ResUpdateUserDTO {
     private GenderEnum gender;
     private String address;
     private Instant updatedAt;
+
+     private CompanyUser company;
+
+    @Getter
+    @Setter
+    public static class CompanyUser{
+        private long id;
+        private String name;
+    }
 }
