@@ -21,8 +21,8 @@ import com.person.careerconnect.domain.response.ResultPaginationDTO;
 import com.person.careerconnect.domain.response.job.ResCreateJobDTO;
 import com.person.careerconnect.domain.response.job.ResUpdateJobDTO;
 import com.person.careerconnect.service.JobService;
-import com.person.careerconnect.service.error.IdInvalidException;
 import com.person.careerconnect.util.annotation.ApiMessage;
+import com.person.careerconnect.util.error.IdInvalidException;
 import com.turkraft.springfilter.boot.Filter;
 
 import jakarta.validation.Valid;

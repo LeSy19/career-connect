@@ -5,8 +5,9 @@ import com.person.careerconnect.domain.request.ReqLoginDTO;
 import com.person.careerconnect.domain.response.ResLoginDTO;
 import com.person.careerconnect.service.SecurityUtil;
 import com.person.careerconnect.service.UserService;
-import com.person.careerconnect.service.error.IdInvalidException;
 import com.person.careerconnect.util.annotation.ApiMessage;
+import com.person.careerconnect.util.error.IdInvalidException;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
