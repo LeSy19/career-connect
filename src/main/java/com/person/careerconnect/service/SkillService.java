@@ -21,20 +21,25 @@ public class SkillService {
         this.skillRepository = skillRepository;
     }
 
+    public boolean isExistsName(String name){
+        return this.skillRepository.existsByName(name);
+    }
+
+    public Skill fetchSkillById(long id){
+        Optional<Skill> skillOptional = this.skillRepository.findById(id);
+        if(skillOptional.isPresent()){
+            return skillOptional.get();
+        }
+        return null;
+    }
+
    
     public Skill handleCreateSkill(Skill skill){
         return this.skillRepository.save(skill);
     }
 
     public Skill handleUpdateSkill(Skill skill){
-        Optional<Skill> skillOptional = this.skillRepository.findById(skill.getId());
-        if(skillOptional.isPresent()){
-            Skill currentSkill = skillOptional.get();
-            currentSkill.setName(skill.getName());
-            currentSkill = skillRepository.save(currentSkill);
-            return currentSkill;
-        }
-        return null;
+        return this.skillRepository.save(skill);
     }
 
     public Optional<Skill> getById(long id){
@@ -58,4 +63,16 @@ public class SkillService {
         return rs;
 
     }
+
+    public void deleteSkill(long id){
+        //delete job (insite job_skill table)
+        Optional<Skill> skillOptional = this.skillRepository.findById(id);
+        Skill currentSkill = skillOptional.get();
+        currentSkill.getJobs().forEach(job -> job.getSkills().remove(currentSkill));
+ 
+        //delete skill
+        this.skillRepository.deleteById(id);
+    }
+
+
 }
