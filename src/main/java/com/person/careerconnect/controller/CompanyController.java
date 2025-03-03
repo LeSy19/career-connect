@@ -7,6 +7,9 @@ import com.person.careerconnect.util.annotation.ApiMessage;
 import com.person.careerconnect.util.error.IdInvalidException;
 import com.turkraft.springfilter.boot.Filter;
 import jakarta.validation.Valid;
+
+import java.util.Optional;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -51,5 +54,12 @@ public class CompanyController {
     public ResponseEntity<Void> deleteCompany(@PathVariable("id") long id){
         this.companyService.handleDeleteCompany(id);
         return ResponseEntity.ok().body(null);
+    }
+
+    @GetMapping("/companies/{id}")
+    @ApiMessage("Fetch company by id")
+    public ResponseEntity<Company> fetchByid(@PathVariable("id") long id){
+        Optional<Company> companyOptional = this.companyService.findById(id);
+        return ResponseEntity.ok().body(companyOptional.get());
     }
 }

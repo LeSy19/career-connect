@@ -53,7 +53,7 @@ public class JobController {
             throw new IdInvalidException("Job id = "+job.getId()+" không tồn tại");
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(this.jobService.updateJob(job));
+        return ResponseEntity.status(HttpStatus.OK).body(this.jobService.updateJob(job, currentJob.get()));
     }
 
     @DeleteMapping("/jobs/{id}")
