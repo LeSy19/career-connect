@@ -1,6 +1,7 @@
 package com.person.careerconnect.service;
 
 import com.person.careerconnect.domain.Company;
+import com.person.careerconnect.domain.Role;
 import com.person.careerconnect.domain.User;
 import com.person.careerconnect.domain.response.ResCreateUserDTO;
 import com.person.careerconnect.domain.response.ResUpdateUserDTO;
@@ -20,20 +21,30 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
     private final CompanyService companyService;
+    private final RoleService roleService;
 
     public UserService(UserRepository userRepository,
-                        CompanyService companyService) {
+            CompanyService companyService,
+            RoleService roleService) {
         this.userRepository = userRepository;
         this.companyService = companyService;
+        this.roleService = roleService;
     }
 
     public User handleCreateUser(User user) {
 
         // check company
-        if(user.getCompany() != null){
+        if (user.getCompany() != null) {
             Optional<Company> companyOptional = this.companyService.findById(user.getCompany().getId());
             user.setCompany(companyOptional.isPresent() ? companyOptional.get() : null);
         }
+
+        // check role
+        if (user.getRole() != null) {
+            Role r = this.roleService.fetchById(user.getRole().getId());
+            user.setRole(r != null ? r : null);
+        }
+
         userRepository.save(user);
         return user;
     }
@@ -44,7 +55,7 @@ public class UserService {
 
     public ResCreateUserDTO convertToResCreateUserDTO(User user) {
         ResCreateUserDTO res = new ResCreateUserDTO();
-        ResCreateUserDTO.CompanyUser companyUser = new  ResCreateUserDTO.CompanyUser();
+        ResCreateUserDTO.CompanyUser companyUser = new ResCreateUserDTO.CompanyUser();
 
         res.setId(user.getId());
         res.setEmail(user.getEmail());
@@ -54,7 +65,7 @@ public class UserService {
         res.setAddress(user.getAddress());
         res.setCreatedAt(user.getCreatedAt());
 
-        if(user.getCompany() != null){
+        if (user.getCompany() != null) {
             companyUser.setId(user.getCompany().getId());
             companyUser.setName(user.getCompany().getName());
             res.setCompany(companyUser);
@@ -79,12 +90,19 @@ public class UserService {
 
     public ResUserDTO convertToResUserDTO(User user) {
         ResUserDTO res = new ResUserDTO();
-        ResUserDTO.CompanyUser companyUser = new  ResUserDTO.CompanyUser();
+        ResUserDTO.CompanyUser companyUser = new ResUserDTO.CompanyUser();
+        ResUserDTO.RoleUser roleUser = new ResUserDTO.RoleUser();
 
-        if(user.getCompany() != null){
+        if (user.getCompany() != null) {
             companyUser.setId(user.getCompany().getId());
             companyUser.setName(user.getCompany().getName());
             res.setCompany(companyUser);
+        }
+
+        if(user.getRole() != null){
+            roleUser.setId(user.getRole().getId());
+            roleUser.setName(user.getRole().getName());
+            res.setRole(roleUser);
         }
 
         res.setId(user.getId());
@@ -112,22 +130,9 @@ public class UserService {
 
         rs.setMeta(mt);
 
-        //mapping data truowcs khi trả về cho client
+        // remove sensitive data
         List<ResUserDTO> listUser = pageUser.getContent()
-                .stream().map(item -> new ResUserDTO(
-                        item.getId(),
-                        item.getName(),
-                        item.getEmail(),
-                        item.getAge(),
-                        item.getGender(),
-                        item.getAddress(),
-                        item.getCreatedAt(),
-                        item.getUpdatedAt(),
-                        new ResUserDTO.CompanyUser(
-                            item.getCompany() != null ? item.getCompany().getId() : 0,
-                            item.getCompany() != null ? item.getCompany().getName() : null)
-                        ))
-                        
+                .stream().map(item -> this.convertToResUserDTO(item))
                 .collect(Collectors.toList());
 
         rs.setResult(listUser);
@@ -145,20 +150,26 @@ public class UserService {
             currentUser.setAddress(user.getAddress());
             currentUser = this.userRepository.save(currentUser);
 
-            //check company
-            if(user.getCompany() != null){
+            // check company
+            if (user.getCompany() != null) {
                 Optional<Company> companyOptional = this.companyService.findById(user.getCompany().getId());
-                user.setCompany(companyOptional.get() != null ? companyOptional.get() : null);
+                currentUser.setCompany(companyOptional.get() != null ? companyOptional.get() : null);
+            }
+
+            // check role
+            if (user.getRole() != null) {
+                Role r = this.roleService.fetchById(user.getRole().getId());
+                user.setRole(r != null ? r : null);
             }
         }
         return currentUser;
     }
 
-    public ResUpdateUserDTO convertUpdateUserDTO(User user){
+    public ResUpdateUserDTO convertUpdateUserDTO(User user) {
         ResUpdateUserDTO res = new ResUpdateUserDTO();
         ResUpdateUserDTO.CompanyUser companyUser = new ResUpdateUserDTO.CompanyUser();
-        
-        if(user.getCompany() != null){
+
+        if (user.getCompany() != null) {
             companyUser.setId(user.getCompany().getId());
             companyUser.setName(user.getCompany().getName());
             res.setCompany(companyUser);
@@ -177,16 +188,16 @@ public class UserService {
         return this.userRepository.findByEmail(username);
     }
 
-    //Cập nhaajt refresh token
-    public void updateUserToken(String token, String email){
+    // Cập nhaajt refresh token
+    public void updateUserToken(String token, String email) {
         User currentUser = this.handleGetUserByUsername(email);
-        if(currentUser != null){
+        if (currentUser != null) {
             currentUser.setRefreshToken(token);
             this.userRepository.save(currentUser);
         }
     }
 
-    public User getUserByRefreshTokenAndEmail(String token, String email){
+    public User getUserByRefreshTokenAndEmail(String token, String email) {
         return this.userRepository.findByRefreshTokenAndEmail(token, email);
     }
 }

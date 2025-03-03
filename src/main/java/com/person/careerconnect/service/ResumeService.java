@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -19,6 +20,10 @@ import com.person.careerconnect.domain.response.resume.ResUpdateResumeDTO;
 import com.person.careerconnect.repository.JobRepository;
 import com.person.careerconnect.repository.ResumeRepository;
 import com.person.careerconnect.repository.UserRepository;
+import com.turkraft.springfilter.converter.FilterSpecification;
+import com.turkraft.springfilter.converter.FilterSpecificationConverter;
+import com.turkraft.springfilter.parser.FilterParser;
+import com.turkraft.springfilter.parser.node.FilterNode;
 
 @Service
 public class ResumeService {
@@ -26,34 +31,41 @@ public class ResumeService {
     private final UserRepository userRepository;
     private final JobRepository jobRepository;
 
-    public ResumeService(ResumeRepository resumeRepository, UserRepository userRepository, JobRepository jobRepository) {
+    @Autowired
+    private FilterParser filterParser;
+
+    @Autowired
+    private FilterSpecificationConverter filterSpecificationConverter;
+
+    public ResumeService(ResumeRepository resumeRepository, UserRepository userRepository,
+            JobRepository jobRepository) {
         this.resumeRepository = resumeRepository;
         this.userRepository = userRepository;
         this.jobRepository = jobRepository;
     }
 
-    public boolean checkResumeExistByUserAndJob(Resume resume){
-        //check user by id
-        if(resume.getUser() == null){
+    public boolean checkResumeExistByUserAndJob(Resume resume) {
+        // check user by id
+        if (resume.getUser() == null) {
             return false;
         }
 
-        //check user by id
+        // check user by id
         Optional<User> userOptional = this.userRepository.findById(resume.getUser().getId());
-        if(userOptional.isEmpty()){
+        if (userOptional.isEmpty()) {
             return false;
         }
 
-        //check job by id
+        // check job by id
         Optional<Job> jobOptional = this.jobRepository.findById(resume.getJob().getId());
-        if(jobOptional.isEmpty()){
+        if (jobOptional.isEmpty()) {
             return false;
         }
 
         return true;
     }
 
-    public ResCreateResumeDTO createResume(Resume resume){
+    public ResCreateResumeDTO createResume(Resume resume) {
         resume = this.resumeRepository.save(resume);
 
         ResCreateResumeDTO res = new ResCreateResumeDTO();
@@ -64,11 +76,11 @@ public class ResumeService {
         return res;
     }
 
-    public Optional<Resume> fetchById(long id){
+    public Optional<Resume> fetchById(long id) {
         return this.resumeRepository.findById(id);
     }
 
-    public ResUpdateResumeDTO updateResume(Resume resume){
+    public ResUpdateResumeDTO updateResume(Resume resume) {
         resume = this.resumeRepository.save(resume);
 
         ResUpdateResumeDTO res = new ResUpdateResumeDTO();
@@ -78,11 +90,11 @@ public class ResumeService {
         return res;
     }
 
-    public void deleleResume(long id){
+    public void deleleResume(long id) {
         this.resumeRepository.deleteById(id);
     }
 
-    public ResFetchResumeDTO getResume(Resume resume){
+    public ResFetchResumeDTO getResume(Resume resume) {
         ResFetchResumeDTO res = new ResFetchResumeDTO();
         res.setId(resume.getId());
         res.setEmail(resume.getEmail());
@@ -93,7 +105,7 @@ public class ResumeService {
         res.setCreatedBy(resume.getCreatedBy());
         res.setUpdatedBy(resume.getUpdatedBy());
 
-        if(resume.getJob() != null){
+        if (resume.getJob() != null) {
             res.setCompanyName(resume.getJob().getCompany().getName());
         }
 
@@ -103,7 +115,7 @@ public class ResumeService {
         return res;
     }
 
-    public ResultPaginationDTO getAllResume(Specification<Resume> spec, Pageable page){
+    public ResultPaginationDTO getAllResume(Specification<Resume> spec, Pageable page) {
         Page<Resume> pageResume = this.resumeRepository.findAll(spec, page);
         ResultPaginationDTO rs = new ResultPaginationDTO();
         ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
@@ -116,12 +128,35 @@ public class ResumeService {
 
         rs.setMeta(mt);
 
-        //remove sensitive data
+        // remove sensitive data
         List<ResFetchResumeDTO> listResumes = pageResume.getContent()
-            .stream().map(item -> this.getResume(item)) 
-            .collect(Collectors.toList());
-            
+                .stream().map(item -> this.getResume(item))
+                .collect(Collectors.toList());
+
         rs.setResult(listResumes);
+
+        return rs;
+    }
+
+    public ResultPaginationDTO fetchResumeByUser(Pageable pageable) {
+        // query builder
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() == true ? SecurityUtil.getCurrentUserLogin().get()
+                : null;
+
+        FilterNode node = filterParser.parse("email = '"+email+"'");
+        FilterSpecification<Resume> spec = filterSpecificationConverter.convert(node);
+        Page<Resume> pageResume = this.resumeRepository.findAll(spec, pageable);
+
+        ResultPaginationDTO rs = new ResultPaginationDTO();
+        ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
+
+        mt.setPage(pageable.getPageNumber() + 1);
+        mt.setPageSize(pageable.getPageSize());
+
+        mt.setPages(pageResume.getTotalPages());
+        mt.setTotal(pageResume.getTotalElements());
+
+        rs.setMeta(mt);
 
         return rs;
     }

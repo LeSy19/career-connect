@@ -1,6 +1,7 @@
 package com.person.careerconnect.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.person.careerconnect.domain.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +26,7 @@ public class ResLoginDTO {
         private long id;
         private String email;
         private String name;
+        private Role role;
     }
 
     @Getter
@@ -35,5 +37,14 @@ public class ResLoginDTO {
         private UserLogin user;
     }
 
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class UserInsideToken{
+        private long id;
+        private String email;
+        private String name;
+    }
     
 }
