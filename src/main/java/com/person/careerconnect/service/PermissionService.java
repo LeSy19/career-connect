@@ -30,16 +30,16 @@ public class PermissionService {
         return this.permissionRepository.save(p);
     }
 
-    public Optional<Permission> fetchById(long id) {
+    public Permission fetchById(long id) {
         Optional<Permission> p = this.permissionRepository.findById(id);
         if (p.isPresent()) {
-            return p;
+            return p.get();
         }
         return null;
     }
 
     public Permission update(Permission p) {
-        Permission permisionDB = this.fetchById(p.getId()).get();
+        Permission permisionDB = this.fetchById(p.getId());
         if (permisionDB != null) {
             permisionDB.setName(p.getName());
             permisionDB.setApiPath(p.getApiPath());
@@ -81,4 +81,13 @@ public class PermissionService {
         return rs;
     }
 
+    public boolean isSameName(Permission p){
+        Permission permissionDB = this.fetchById(p.getId());
+        if(permissionDB != null){
+            if(permissionDB.getName().equals(p.getName())){
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -31,17 +31,21 @@ public class ResumeService {
     private final UserRepository userRepository;
     private final JobRepository jobRepository;
 
-    @Autowired
-    private FilterParser filterParser;
+    
+    private final FilterParser filterParser;
 
-    @Autowired
-    private FilterSpecificationConverter filterSpecificationConverter;
+   
+    private final FilterSpecificationConverter filterSpecificationConverter;
 
     public ResumeService(ResumeRepository resumeRepository, UserRepository userRepository,
-            JobRepository jobRepository) {
+            JobRepository jobRepository,
+            FilterParser filterParser,
+            FilterSpecificationConverter filterSpecificationConverter) {
         this.resumeRepository = resumeRepository;
         this.userRepository = userRepository;
         this.jobRepository = jobRepository;
+        this.filterParser = filterParser;
+        this.filterSpecificationConverter = filterSpecificationConverter;
     }
 
     public boolean checkResumeExistByUserAndJob(Resume resume) {

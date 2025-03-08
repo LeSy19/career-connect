@@ -6,6 +6,7 @@ import com.person.careerconnect.service.SecurityUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -45,6 +46,7 @@ public class SecurityConfiguration {
             String[] whiteList = {
                 "/", "/api/v1/auth/login", 
                 "/api/v1/auth/refresh", 
+                "/api/v1/auth/register",
                 "/storage/**",
                 "/api/v1/companies/**", 
                 "/api/v1/jobs/**"
@@ -55,8 +57,10 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(
                         authz -> authz
-                                .requestMatchers(whiteList)
-                                .permitAll() // Cho phép truy cập endpoint "/"
+                                .requestMatchers(whiteList).permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/companies").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/jobs").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/v1/skills").permitAll()
                                 .anyRequest().authenticated()   // Các endpoint khác yêu cầu xác thực
                 )
 
