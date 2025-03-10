@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Hỏi Dân IT vs Eric</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .header td {
+            font-size: 20px;
+            font-weight: bold;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .content td {
+            font-size: 16px;
+            padding: 10px 0;
+        }
+
+        .job-item td {
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .job-item a {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ea1e30;
+            text-decoration: none;
+        }
+
+        .company, .salary {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .skills span {
+            font-size: 14px;
+            background: #e8e8e8;
+            padding: 4px 8px;
+            margin-right: 5px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+
+        .button {
+            display: block;
+            width: 100%;
+            text-align: center;
+            background: #ea1e30;
+            color: white;
+            padding: 12px;
+            border-radius: 5px;
+            font-size: 16px;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+
+        .footer td {
+            font-size: 16px;
+            padding-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <table class="container">
+        <tr class="header">
+            <td>Career Connect</td>
+            <td style="text-align: right;">Ít nhưng mà chất</td>
+        </tr>
+        <tr class="content">
+            <td colspan="2">
+                <p >Hi <span th:text="${name}"></span>,</p>
+                <p>One of these jobs may be your next one. Find out today!</p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <table>
+                    <tr class="job-item" th:each="job : ${jobs}">
+                        <td>
+                            <a href="https://hoidanit.vn/" target="_blank" th:text="${job.name}"></a>
+                            <div class="company" th:text="${job.company.name}"></div>
+                            <div class="salary" th:text="${#numbers.formatDecimal(job.salary, 0, 'COMMA', 2, 'POINT')} + ' VNĐ'"></div>
+                            <div class="skills">
+                                <span th:each="skill : ${job.skills}" th:text="${skill.name}"></span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align: center;">
+                <a href="https://hoidanit.vn/" target="_blank" class="button">Xem thêm job tại Career Connect</a>
+            </td>
+        </tr>
+        <tr class="footer">
+            <td colspan="2">
+                <p>Cheers, Sy</p>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

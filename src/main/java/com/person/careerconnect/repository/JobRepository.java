@@ -10,5 +10,5 @@ import com.person.careerconnect.domain.Skill;
 
 public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificationExecutor<Job> {
     
-   
+   List<Job> findBySkillsIn(List<Skill> skills);
 }
