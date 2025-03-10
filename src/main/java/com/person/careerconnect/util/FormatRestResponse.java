@@ -15,7 +15,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 @ControllerAdvice
 public class FormatRestResponse implements ResponseBodyAdvice<Object> {
 
-
     @Override
     public boolean supports(MethodParameter returnType, Class converterType) {
         return true;
@@ -23,26 +22,32 @@ public class FormatRestResponse implements ResponseBodyAdvice<Object> {
 
     @Override
     public Object beforeBodyWrite(Object body,
-                                  MethodParameter returnType,
-                                  MediaType selectedContentType,
-                                  Class selectedConverterType,
-                                  ServerHttpRequest request,
-                                  ServerHttpResponse response) {
+            MethodParameter returnType,
+            MediaType selectedContentType,
+            Class selectedConverterType,
+            ServerHttpRequest request,
+            ServerHttpResponse response) {
         HttpServletResponse servletResponse = ((ServletServerHttpResponse) response).getServletResponse();
         int status = servletResponse.getStatus();
 
         RestResponse<Object> res = new RestResponse<Object>();
         res.setStatusCode(status);
 
-        if(body instanceof String || body instanceof Resource){
+        if (body instanceof String || body instanceof Resource) {
             return body;
         }
-        if(status >= 400){
-            //error
+
+        String path = request.getURI().getPath();
+        if (path.startsWith("/v3/api-docs") || path.startsWith("/swagger-ui")) {
+            return body;
+        }
+
+        if (status >= 400) {
+            // error
             res.setError("CALL API FAILED");
             res.setMessage(body);
-        }else{
-            //success
+        } else {
+            // success
             res.setData(body);
             ApiMessage message = returnType.getMethodAnnotation(ApiMessage.class);
             res.setMessage(message != null ? message.value() : "CALL API SUCCESS");
