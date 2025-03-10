@@ -1,5 +1,6 @@
 package com.person.careerconnect.controller;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -7,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.person.careerconnect.service.EmailService;
 import com.person.careerconnect.service.SubscriberService;
 import com.person.careerconnect.util.annotation.ApiMessage;
+
+import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("/api/v1/email")
@@ -22,6 +25,8 @@ public class EmailController {
     }
     @GetMapping
     @ApiMessage("Send simple email")
+    // @Scheduled(cron = "*/30 * * * * *")
+    // @Transactional
     public String sendSimpleEmail(){
         // this.emailService.sendSimpleEmail();
         // this.emailService.sendEmailSync("sydev191@gmail.com", "Test1", "<h1> <b> hello </b> </h1>", false, true);

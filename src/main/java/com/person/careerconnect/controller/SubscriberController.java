@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.person.careerconnect.domain.Subscriber;
+import com.person.careerconnect.service.SecurityUtil;
 import com.person.careerconnect.service.SubscriberService;
 import com.person.careerconnect.util.annotation.ApiMessage;
 import com.person.careerconnect.util.error.IdInvalidException;
@@ -46,6 +47,15 @@ public class SubscriberController {
             throw new IdInvalidException("Subsriber id = "+subsRequest.getId()+" không tồn tại");
         }
         return ResponseEntity.ok().body(this.subscriberService.update(subsDB, subsRequest));
+    }
+
+    @PostMapping("/subscribers/skills")
+    @ApiMessage("Get subscriber's skills")
+    public ResponseEntity<Subscriber> getSkill(){
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() == true ? 
+        SecurityUtil.getCurrentUserLogin().get() : null;
+
+        return ResponseEntity.ok().body(this.subscriberService.findByEmail(email));
     }
 
 }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.person.careerconnect.domain.Job;
@@ -84,6 +85,11 @@ public class SubscriberService {
         return res;
     }
 
+    // @Scheduled(fixedRate = 1000)
+    // public void testCron(){
+    //     System.out.println("Test cron job");
+    // }
+
     public void sendSubscribersEmailJobs() {
         //Lấy tất cả subscriber từ database
         List<Subscriber> listSubs = this.subscriberRepository.findAll();
@@ -112,6 +118,10 @@ public class SubscriberService {
                 }
             }
         }
+    }
+
+    public Subscriber findByEmail(String email){
+        return this.subscriberRepository.findByEmail(email);
     }
 
 }
