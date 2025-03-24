@@ -88,6 +88,37 @@ public class UserService {
         return null;
     }
 
+    public List<ResUserDTO> convertFromUserToUserDTO(List<User> users) {
+        return users.stream().map(user -> {
+            ResUserDTO res = new ResUserDTO();
+            ResUserDTO.CompanyUser companyUser = new ResUserDTO.CompanyUser();
+            ResUserDTO.RoleUser roleUser = new ResUserDTO.RoleUser();
+
+            if (user.getCompany() != null) {
+                companyUser.setId(user.getCompany().getId());
+                companyUser.setName(user.getCompany().getName());
+                res.setCompany(companyUser);
+            }
+
+            if (user.getRole() != null) {
+                roleUser.setId(user.getRole().getId());
+                roleUser.setName(user.getRole().getName());
+                res.setRole(roleUser);
+            }
+
+            res.setId(user.getId());
+            res.setName(user.getName());
+            res.setEmail(user.getEmail());
+            res.setAge(user.getAge());
+            res.setGender(user.getGender());
+            res.setAddress(user.getAddress());
+            res.setCreatedAt(user.getCreatedAt());
+            res.setUpdatedAt(user.getUpdatedAt());
+
+            return res;
+        }).collect(Collectors.toList());
+    }
+
     public ResUserDTO convertToResUserDTO(User user) {
         ResUserDTO res = new ResUserDTO();
         ResUserDTO.CompanyUser companyUser = new ResUserDTO.CompanyUser();
@@ -99,7 +130,7 @@ public class UserService {
             res.setCompany(companyUser);
         }
 
-        if(user.getRole() != null){
+        if (user.getRole() != null) {
             roleUser.setId(user.getRole().getId());
             roleUser.setName(user.getRole().getName());
             res.setRole(roleUser);
@@ -117,7 +148,7 @@ public class UserService {
         return res;
     }
 
-    public ResultPaginationDTO findAllUsers(Specification<User> spec, Pageable pageable) {
+    public ResultPaginationDTO findAllUserWithPage(Specification<User> spec, Pageable pageable) {
         Page<User> pageUser = this.userRepository.findAll(spec, pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
         ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
@@ -199,5 +230,9 @@ public class UserService {
 
     public User getUserByRefreshTokenAndEmail(String token, String email) {
         return this.userRepository.findByRefreshTokenAndEmail(token, email);
+    }
+
+    public List<User> fetchAllUser() {
+        return this.userRepository.findAll();
     }
 }
